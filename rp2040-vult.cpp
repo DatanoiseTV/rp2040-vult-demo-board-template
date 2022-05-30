@@ -9,6 +9,9 @@
 #include "hardware/timer.h"
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
+#include "vult.h"
+
+Dsp_process_type ctx;
 
 #define USE_AUDIO_I2S 1
 #include "audio_i2s.h"
@@ -96,6 +99,8 @@ int main()
 {
     stdio_init_all();
 
+    Dsp_process_init(ctx);
+
     if (!set_sys_clock_khz(270000, false))
         printf("system clock 270MHz failed\n");
     else
@@ -151,8 +156,9 @@ extern "C"
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
             // do your audio processing here
-            samples[i * 2 + 0] = 0; // LEFT
-            samples[i * 2 + 1] = 0; // RIGHT
+            int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
+            samples[i * 2 + 0] = smp; // LEFT
+            samples[i * 2 + 1] = smp; // RIGHT
         }
         buffer->sample_count = buffer->max_sample_count;
         give_audio_buffer(ap, buffer);

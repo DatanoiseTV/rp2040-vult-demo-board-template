@@ -2,9 +2,10 @@
 
 // Main processing function
 // 'input' is by default a sine wave at 440 Hz
+
 fun process(cv, pw, input:real){
 val o1 = Blit.process(cv,pw, 0.0);
-   return input;
+   return o1;
 }
 
 // Called when a note On is received
