@@ -23,7 +23,26 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(rp2040-vult rp2040-vult.cpp audio_i2s.c audio.cpp)
+include_directories(".")
+
+
+# Generate Vult C++ code from Vult Code every time
+set(VULT_EXAMPLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vult/examples")
+add_custom_command(
+        OUTPUT ALL ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp
+	COMMAND vultc ${CMAKE_CURRENT_SOURCE_DIR}/dsp.vult
+                -i ${VULT_EXAMPLE_PATH}/osc
+                -i ${VULT_EXAMPLE_PATH}/util
+                -i ${VULT_EXAMPLE_PATH}/filters
+                -i ${VULT_EXAMPLE_PATH}/env
+                -i ${VULT_EXAMPLE_PATH}/midi
+                -i ${VULT_EXAMPLE_PATH}/effects
+                -ccode -real fixed -o vult 
+        COMMENT "Transcompiling Vult DSP Code to C++."
+        VERBATIM
+)
+
+add_executable(rp2040-vult rp2040-vult.cpp audio_i2s.c audio.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
 
 pico_generate_pio_header(rp2040-vult ${CMAKE_CURRENT_LIST_DIR}/audio_i2s.pio)
 

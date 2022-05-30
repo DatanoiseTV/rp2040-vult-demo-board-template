@@ -1,0 +1,3 @@
+[submodule "vult"]
+	path = vult
+	url = https://github.com/vult-dsp/vult.git

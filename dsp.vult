@@ -1,0 +1,24 @@
+/* You can use a this template to start a program */
+
+// Main processing function
+// 'input' is by default a sine wave at 440 Hz
+fun process(cv, pw, input:real){
+val o1 = Blit.process(cv,pw, 0.0);
+   return input;
+}
+
+// Called when a note On is received
+and noteOn(note:int,velocity:int,channel:int){
+}
+
+// Called when a note Off is received
+and noteOff(note:int,channel:int){
+}
+
+// Called when a control changes
+and controlChange(control:int,value:int,channel:int){
+}
+
+// Called on initialization to define initial values
+and default(){
+}
