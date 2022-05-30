@@ -30,14 +30,17 @@ include_directories(".")
 set(VULT_EXAMPLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vult/examples")
 add_custom_command(
         OUTPUT ALL ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp
-	COMMAND vultc ${CMAKE_CURRENT_SOURCE_DIR}/dsp.vult
+        COMMAND vultc ${CMAKE_CURRENT_SOURCE_DIR}/dsp.vult
                 -i ${VULT_EXAMPLE_PATH}/osc
                 -i ${VULT_EXAMPLE_PATH}/util
                 -i ${VULT_EXAMPLE_PATH}/filters
                 -i ${VULT_EXAMPLE_PATH}/env
                 -i ${VULT_EXAMPLE_PATH}/midi
                 -i ${VULT_EXAMPLE_PATH}/effects
-                -ccode -real fixed -o vult 
+                -ccode
+                -real fixed
+                -samplerate 44100
+                -o vult 
         COMMENT "Transcompiling Vult DSP Code to C++."
         VERBATIM
 )
