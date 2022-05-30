@@ -11,6 +11,9 @@ The DSP board contains:
 * 2 CV Inputs
 * USB Type-C for MCU USB
 * USB Type-C for UART Debug Bridges
+* Mount for I2C 128x32 SSD1306 OLED
+* Mount for PEC12R Encoder with Button
+* User/Trigger Button
 
 ## Building 
 ```
