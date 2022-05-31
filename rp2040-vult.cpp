@@ -28,16 +28,19 @@ static inline uint32_t _millis(void)
 // MIDI callbacks
 void note_on_callback(uint8_t note, uint8_t level)
 {
+    Dsp_noteOn(ctx, note, level, 1);
     printf("note on: %d %d\n", note, level);
 }
 
 void note_off_callback(uint8_t note, uint8_t level)
 {
+    Dsp_noteOff(ctx, note, 1);
     printf("note off: %d %d\n", note, level);
 }
 
 void cc_callback(uint8_t cc, uint8_t value)
 {
+    Dsp_controlChange(ctx, cc, value, 1);
     printf("cc: %d %d\n", cc, value);
 }
 
@@ -79,7 +82,7 @@ int main()
     midi_input.setCCCallback(cc_callback);
     midi_input.setNoteOnCallback(note_on_callback);
     midi_input.setNoteOffCallback(note_off_callback);
-    
+
     
     // Add your background UI processing or midi etc.
     while(true){
