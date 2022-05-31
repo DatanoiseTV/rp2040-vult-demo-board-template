@@ -42,10 +42,10 @@ void process_cv(void)
         adc_select_input(1);
         cv.ch1 = adc_read();
 
-        cv.gate1 = gpio_get(PIN_TRIG_IN_0);
-        cv.gate2 = gpio_get(PIN_TRIG_IN_1);
-        cv.gate3 = gpio_get(PIN_TRIG_IN_2);
-        cv.gate4 = gpio_get(PIN_TRIG_IN_3);
+        cv.gate1 = !gpio_get(PIN_TRIG_IN_0);
+        cv.gate2 = !gpio_get(PIN_TRIG_IN_1);
+        cv.gate3 = !gpio_get(PIN_TRIG_IN_2);
+        cv.gate4 = !gpio_get(PIN_TRIG_IN_3);
 }
 
 // MIDI callbacks
