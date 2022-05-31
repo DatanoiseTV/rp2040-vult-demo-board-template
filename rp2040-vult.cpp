@@ -49,21 +49,21 @@ void process_cv(void)
 }
 
 // MIDI callbacks
-void note_on_callback(uint8_t note, uint8_t level)
+void note_on_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
-    Dsp_noteOn(ctx, note, level, 1);
+    Dsp_noteOn(ctx, note, level, channel);
     printf("note on: %d %d\n", note, level);
 }
 
-void note_off_callback(uint8_t note, uint8_t level)
+void note_off_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
-    Dsp_noteOff(ctx, note, 1);
+    Dsp_noteOff(ctx, note, channel);
     printf("note off: %d %d\n", note, level);
 }
 
-void cc_callback(uint8_t cc, uint8_t value)
+void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
 {
-    Dsp_controlChange(ctx, cc, value, 1);
+    Dsp_controlChange(ctx, cc, value, channel);
     printf("cc: %d %d\n", cc, value);
 }
 

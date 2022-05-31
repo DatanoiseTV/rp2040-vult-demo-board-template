@@ -16,9 +16,9 @@ public:
 
     void process();
 
-    void setNoteOnCallback(void (*callback)(uint8_t, uint8_t));
-    void setNoteOffCallback(void (*callback)(uint8_t, uint8_t));
-    void setCCCallback(void (*callback)(uint8_t, uint8_t));
+    void setNoteOnCallback(void (*callback)(uint8_t, uint8_t, uint8_t));
+    void setNoteOffCallback(void (*callback)(uint8_t, uint8_t, uint8_t));
+    void setCCCallback(void (*callback)(uint8_t, uint8_t, uint8_t));
 
 private:
     const char MIDICH = 1;
@@ -27,9 +27,9 @@ private:
     char MIDINote;
     char MIDILevel;
 
-    void (*MIDINoteOnCallback)(uint8_t, uint8_t);
-    void (*MIDINoteOffCallback)(uint8_t, uint8_t);
-    void (*MIDICCCallback)(uint8_t, uint8_t);
+    void (*MIDINoteOnCallback)(uint8_t, uint8_t, uint8_t);
+    void (*MIDINoteOffCallback)(uint8_t, uint8_t, uint8_t);
+    void (*MIDICCCallback)(uint8_t, uint8_t, uint8_t);
 
 };
 
