@@ -20,9 +20,33 @@ audio_buffer_pool_t *ap;
 Dsp_process_type ctx;
 MIDIInput midi_input;
 
+typedef struct {
+    uint16_t ch0;
+    uint16_t ch1;
+    uint16_t ch2;
+    uint16_t ch3;
+} cv_channels_t;
+
+cv_channels_t cv;
+
 static inline uint32_t _millis(void)
 {
     return to_ms_since_boot(get_absolute_time());
+}
+
+void process_cv(void)
+{
+    static uint32_t last_millis = 0;
+    uint32_t millis = _millis();
+    if (millis - last_millis > 5) {
+        last_millis = millis;
+        
+        adc_select_input(0);
+        cv.ch0 = adc_read();
+
+        adc_select_input(1);
+        cv.ch1 = adc_read();
+    }
 }
 
 // MIDI callbacks
@@ -104,10 +128,15 @@ extern "C"
         }
         int32_t *samples = (int32_t *)buffer->buffer->bytes;
 
+        // process CV each round of samples
+        process_cv();
+
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
             // do your audio processing here
-            int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
+            //int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
+
+            int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, gpio_get(PIN_TRIG_IN_0), gpio_get(PIN_TRIG_IN_1), gpio_get(PIN_TRIG_IN_2), gpio_get(PIN_TRIG_IN_3));
             samples[i * 2 + 0] = smp; // LEFT
             samples[i * 2 + 1] = smp; // RIGHT
         }

@@ -3,8 +3,8 @@
 // Main processing function
 // 'input' is by default a sine wave at 440 Hz
 
-fun process(cv, pw, input:real){
-val o1 = Blit.process(cv,pw, 0.0);
+fun process(cv1:real, cv2:real, gate1:bool, gate2:bool, gate3:bool, gate4:bool){
+   val o1 = Blit.process(cv1, cv2, 0.0);
    return o1;
 }
 
