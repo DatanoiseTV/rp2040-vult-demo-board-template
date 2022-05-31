@@ -30,3 +30,17 @@ cmake ..
 make
 cp rp2040-vult.uf2 /media/xyz/RP2_BOOT/
 ```
+
+## Development
+
+The pipeline will trigger a full build on Push or Pull Request.
+
+
+### Releasing
+
+The pipeline will trigger a new release build on following tagging scheme:
+
+```
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
