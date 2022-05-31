@@ -1,6 +1,12 @@
 name: CMake Build Matrix
 
-on: [push, pull_request]
+on: 
+  push:
+    paths-ignore:
+      - 'Dockerfile'
+  pull_request:
+    paths-ignore:
+      - 'Dockerfile'
 
 env:
   CMAKE_VERSION: 3.23.0
@@ -30,15 +36,6 @@ jobs:
     - name: Checkout submodules
       run: git submodule update --init --recursive
 
-    - name: Install toolchain
-      run: sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
-
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-
-    - name: Install vult
-      run: npm install vult -g
 
     - name: Download Ninja and CMake
       shell: cmake -P {0}
@@ -230,7 +227,7 @@ jobs:
 
 
     - name: Pack
-      run: cmake -E tar cfv ./${{ matrix.config.artifact }} --format=7zip build/${{ matrix.config.artifact_files }}
+      run: cmake -E tar cfv ./${{ matrix.config.artifact }} build/${{ matrix.config.artifact_files }}
 
 
     - name: Upload
