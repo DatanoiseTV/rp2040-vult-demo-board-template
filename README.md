@@ -17,18 +17,10 @@ The DSP board contains:
 
 ## Prerequisites
 
-1. Install the  vult compiler: 
-```
-sudo npm install vult -g
-```
+1. Install the  vult compiler: `sudo npm install vult -g`
 
-2. Get the pico-sdk:
-```
-git clone https://github.com/raspberrypi/pico-sdk.git
-cd pico-sdk
-git submodule update --init
-export PICO_SDK_PATH=<path_to_pico_sdk>
-```
+2. If you have the pico-sdk already installed you can point to it by setting `PICO_SDK_PATH`. Otherwise CMake will download it for you.
+
 
 ## Building 
 ```
