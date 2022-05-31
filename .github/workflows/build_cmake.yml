@@ -29,7 +29,7 @@ jobs:
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
-            os: ghcr.io/krmnn/rp2040-vult-build-env,
+            os: "ghcr.io/krmnn/rp2040-vult-build-env",
             cc: "gcc", cxx: "g++"
           }
 
@@ -241,7 +241,7 @@ jobs:
 
   release:
     if: contains(github.ref, 'tags/v')
-    runs-on: ghcr.io/krmnn/rp2040-vult-build-env:latest
+    runs-on: ghcr.io/krmnn/rp2040-vult-build-env
     needs: build
 
     steps:
@@ -276,7 +276,7 @@ jobs:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
-            os: ghcr.io/krmnn/rp2040-vult-build-env:latest
+            os: "ghcr.io/krmnn/rp2040-vult-build-env"
           }
     needs: release
 
