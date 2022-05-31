@@ -10,6 +10,7 @@
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
 #include "project_config.h"
+#include "midi_input.h"
 #include "audio_subsystem.h"
 #include "vult.h"
 
@@ -17,6 +18,7 @@ static const uint32_t PIN_DCDC_PSM_CTRL = 23;
 audio_buffer_pool_t *ap;
 
 Dsp_process_type ctx;
+MIDIInput midi_input;
 
 static inline uint32_t _millis(void)
 {
@@ -43,10 +45,6 @@ int main()
         gpio_set_dir(pin, 0);
     }
 
-    // Initialize MIDI input
-    uart_init(uart1, 38400);
-    gpio_set_function(PIN_MIDI_RX, GPIO_FUNC_UART);
-
     // DCDC PSM control
     // 0: PFM mode (best efficiency)
     // 1: PWM mode (improved ripple)
@@ -65,7 +63,7 @@ int main()
 
     // Add your background UI processing or midi etc.
     while(true){
-        ;;
+        midi_input.process();
     }
 }
 
