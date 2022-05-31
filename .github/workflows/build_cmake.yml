@@ -229,7 +229,7 @@ jobs:
 
 
     - name: Pack
-      run: cmake -E tar cfv ../${{ matrix.config.artifact }} --format=7zip build/${{ matrix.config.artifact_files }}
+      run: cmake -E tar cfv ./${{ matrix.config.artifact }} --format=7zip build/${{ matrix.config.artifact_files }}
 
 
     - name: Upload
