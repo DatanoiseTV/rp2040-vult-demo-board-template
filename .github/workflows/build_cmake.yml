@@ -30,9 +30,12 @@ jobs:
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
-            os: "ghcr.io/${{ github.repository }}",
+            os: "ubuntu-latest",
+            container: "ghcr.io/${{ github.repository }}",
             cc: "gcc", cxx: "g++"
           }
+    container:
+      image: ${{ matrix.config.container }}
 
     steps:
     - uses: actions/checkout@v2
@@ -277,8 +280,11 @@ jobs:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
-            os: "ghcr.io/${{ github.repository }}"
+            os: "ubuntu-latest",
+            container: "ghcr.io/${{ github.repository }}"
           }
+    container:
+      image: ${{ matrix.config.container }}
     needs: release
 
     steps:
