@@ -32,7 +32,7 @@ jobs:
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
-            os: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}",
+            os: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},
             cc: "gcc", cxx: "g++"
           }
 
@@ -279,7 +279,7 @@ jobs:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
-            os: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}",
+            os: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},
 
           }
     needs: release
