@@ -132,9 +132,6 @@ extern "C"
 
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
-            // do your audio processing here
-            //int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
-
             int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, cv.gate1, cv.gate2, cv.gate3, cv.gate4);
             samples[i * 2 + 0] = smp; // LEFT
             samples[i * 2 + 1] = smp; // RIGHT
