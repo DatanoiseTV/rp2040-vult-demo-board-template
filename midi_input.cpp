@@ -19,7 +19,7 @@ void MIDIInput::setCCCallback(void (*callback)(uint8_t, uint8_t, uint8_t))
 
 void MIDIInput::process()
 {
-    uint8_t mb = uart_getc (uart1);
+    uint8_t mb = uart_getc (_uart);
 
     if ((mb >= 0x80) && (mb <= 0xEF))
     {

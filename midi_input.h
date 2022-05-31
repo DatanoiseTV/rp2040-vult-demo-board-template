@@ -9,8 +9,9 @@
 class MIDIInput
 {
 public:
-    MIDIInput() {
-        uart_init(uart1, 31250);
+    MIDIInput(uart_inst_t *uart) {
+        _uart = uart;
+        uart_init(_uart, 31250);
         gpio_set_function(PIN_MIDI_RX, GPIO_FUNC_UART);
     }
 
@@ -30,6 +31,8 @@ private:
     void (*MIDINoteOnCallback)(uint8_t, uint8_t, uint8_t);
     void (*MIDINoteOffCallback)(uint8_t, uint8_t, uint8_t);
     void (*MIDICCCallback)(uint8_t, uint8_t, uint8_t);
+
+    uart_inst_t *_uart;
 
 };
 

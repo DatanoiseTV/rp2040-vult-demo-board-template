@@ -17,7 +17,7 @@
 audio_buffer_pool_t *ap;
 
 Dsp_process_type ctx;
-MIDIInput midi_input;
+MIDIInput midi_input(uart1);
 
 typedef struct {
     uint16_t ch0, ch1, ch2, ch3;
