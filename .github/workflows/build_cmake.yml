@@ -18,7 +18,7 @@ jobs:
         config:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
-            artifact: "rp2040-vult.7z",
+            artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
             os: ubuntu-latest,
             cc: "gcc", cxx: "g++"
@@ -275,7 +275,7 @@ jobs:
         config:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
-            artifact: "rp2040-vult.7z",
+            artifact: "rp2040-vult.tar",
             os: ubuntu-latest
           }
     needs: release
