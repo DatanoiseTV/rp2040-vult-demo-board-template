@@ -15,11 +15,26 @@ The DSP board contains:
 * Mount for PEC12R Encoder with Button
 * User/Trigger Button
 
+## Prerequisites
+
+1. Install the  vult compiler: 
+```
+sudo npm install vult -g
+```
+
+2. Get the pico-sdk:
+```
+git clone https://github.com/raspberrypi/pico-sdk.git
+cd pico-sdk
+git submodule update --init
+export PICO_SDK_PATH=<path_to_pico_sdk>
+```
+
 ## Building 
 ```
-$ export PICO_SDK_PATH=<path_to_pico_sdk>
-$ mkdir build && cd build
-$ cmake ..
-$ make
-$ cp rp2040-vult.uf2 /media/xyz/RP2_BOOT/
+git submodule update --init --recursive
+mkdir build && cd build
+cmake ..
+make
+cp rp2040-vult.uf2 /media/xyz/RP2_BOOT/
 ```
