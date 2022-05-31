@@ -17,8 +17,9 @@ jobs:
       matrix:
         config:
         - {
-            name: "Ubuntu Latest GCC",
-            artifact: "rp2040-vult.7z", artifact_files: "rp2040-vult.*",
+            name: "Ubuntu Latest / arm-none-eabi-gcc",
+            artifact: "rp2040-vult.7z",
+            artifact_files: "rp2040-vult.*",
             os: ubuntu-latest,
             cc: "gcc", cxx: "g++"
           }
@@ -273,7 +274,8 @@ jobs:
       matrix:
         config:
         - {
-            name: "Ubuntu Latest GCC", artifact: "rp2040-vult.7z",
+            name: "Ubuntu Latest / arm-none-eabi-gcc",
+            artifact: "rp2040-vult.7z",
             os: ubuntu-latest
           }
     needs: release
