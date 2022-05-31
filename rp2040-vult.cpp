@@ -52,19 +52,19 @@ void process_cv(void)
 void note_on_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
     Dsp_noteOn(ctx, note, level, channel);
-    printf("note on: %d %d\n", note, level);
+    printf("note on (ch %d): %d %d\n", channel, note, level);
 }
 
 void note_off_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
     Dsp_noteOff(ctx, note, channel);
-    printf("note off: %d %d\n", note, level);
+    printf("note off (ch %d): %d %d\n", channel, note, level);
 }
 
 void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
 {
     Dsp_controlChange(ctx, cc, value, channel);
-    printf("cc: %d %d\n", cc, value);
+    printf("cc (ch %d): %d %d\n", channel, cc, value);
 }
 
 
