@@ -38,6 +38,9 @@ jobs:
       image: ${{ matrix.config.container }}
 
     steps:
+    - name: Set Git safe directory
+      run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
     - uses: actions/checkout@v3
 
     - name: Checkout submodules
