@@ -16,8 +16,6 @@ env:
   NINJA_VERSION: 1.10.2
   BUILD_TYPE: Release
   CCACHE_VERSION: 4.6
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 
 jobs:
@@ -32,7 +30,7 @@ jobs:
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
-            os: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},
+            os: "ghcr.io/${{ github.repository }}",
             cc: "gcc", cxx: "g++"
           }
 
@@ -279,8 +277,7 @@ jobs:
         - {
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
-            os: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},
-
+            os: "ghcr.io/${{ github.repository }}"
           }
     needs: release
 
