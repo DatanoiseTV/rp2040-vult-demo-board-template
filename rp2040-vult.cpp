@@ -14,7 +14,6 @@
 #include "audio_subsystem.h"
 #include "vult.h"
 
-static const uint32_t PIN_DCDC_PSM_CTRL = 23;
 audio_buffer_pool_t *ap;
 
 Dsp_process_type ctx;
@@ -42,29 +41,29 @@ void process_cv(void)
         adc_select_input(1);
         cv.ch1 = adc_read();
 
-        cv.gate1 = gpio_get(PIN_TRIG_IN_0);
-        cv.gate2 = gpio_get(PIN_TRIG_IN_1);
-        cv.gate3 = gpio_get(PIN_TRIG_IN_2);
-        cv.gate4 = gpio_get(PIN_TRIG_IN_3);
+        cv.gate1 = !gpio_get(PIN_TRIG_IN_0);
+        cv.gate2 = !gpio_get(PIN_TRIG_IN_1);
+        cv.gate3 = !gpio_get(PIN_TRIG_IN_2);
+        cv.gate4 = !gpio_get(PIN_TRIG_IN_3);
 }
 
 // MIDI callbacks
-void note_on_callback(uint8_t note, uint8_t level)
+void note_on_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
-    Dsp_noteOn(ctx, note, level, 1);
-    printf("note on: %d %d\n", note, level);
+    Dsp_noteOn(ctx, note, level, channel);
+    printf("note on (ch %d): %d %d\n", channel, note, level);
 }
 
-void note_off_callback(uint8_t note, uint8_t level)
+void note_off_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
-    Dsp_noteOff(ctx, note, 1);
-    printf("note off: %d %d\n", note, level);
+    Dsp_noteOff(ctx, note, channel);
+    printf("note off (ch %d): %d %d\n", channel, note, level);
 }
 
-void cc_callback(uint8_t cc, uint8_t value)
+void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
 {
-    Dsp_controlChange(ctx, cc, value, 1);
-    printf("cc: %d %d\n", cc, value);
+    Dsp_controlChange(ctx, cc, value, channel);
+    printf("cc (ch %d): %d %d\n", channel, cc, value);
 }
 
 
@@ -87,13 +86,6 @@ int main()
         gpio_set_dir(pin, 0);
     }
 
-    // DCDC PSM control
-    // 0: PFM mode (best efficiency)
-    // 1: PWM mode (improved ripple)
-    gpio_init(PIN_DCDC_PSM_CTRL);
-    gpio_set_dir(PIN_DCDC_PSM_CTRL, GPIO_OUT);
-    gpio_put(PIN_DCDC_PSM_CTRL, 1); // PWM mode for less Audio noise
-
     adc_init();
 
     for(int pin=PIN_CV_IN_0; pin <= PIN_POT_1; pin++){
@@ -105,7 +97,6 @@ int main()
     midi_input.setCCCallback(cc_callback);
     midi_input.setNoteOnCallback(note_on_callback);
     midi_input.setNoteOffCallback(note_off_callback);
-
     
     // Add your background UI processing or midi etc.
     while(true){
@@ -132,9 +123,6 @@ extern "C"
 
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
-            // do your audio processing here
-            //int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
-
             int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, cv.gate1, cv.gate2, cv.gate3, cv.gate4);
             samples[i * 2 + 0] = smp; // LEFT
             samples[i * 2 + 1] = smp; // RIGHT

@@ -2,17 +2,17 @@
 
 
 
-void MIDIInput::setNoteOnCallback(void (*callback)(uint8_t, uint8_t))
+void MIDIInput::setNoteOnCallback(void (*callback)(uint8_t, uint8_t, uint8_t))
 {
     MIDINoteOnCallback = callback;
 }
 
-void MIDIInput::setNoteOffCallback(void (*callback)(uint8_t, uint8_t))
+void MIDIInput::setNoteOffCallback(void (*callback)(uint8_t, uint8_t, uint8_t))
 {
     MIDINoteOffCallback = callback;
 }
 
-void MIDIInput::setCCCallback(void (*callback)(uint8_t, uint8_t))
+void MIDIInput::setCCCallback(void (*callback)(uint8_t, uint8_t, uint8_t))
 {
     MIDICCCallback = callback;
 }
@@ -49,8 +49,10 @@ void MIDIInput::process()
             // No record of what state we're in, so can go no further
             return;
 
-        if (MIDIRunningStatus == (0x80 | (MIDICH - 1)))
+        if (MIDIRunningStatus >> 4 == (0x8))
         {
+            uint8_t channel = MIDIRunningStatus & 0x0F;
+
             // Note OFF Received
             if (MIDINote == 0)
             {
@@ -62,13 +64,15 @@ void MIDIInput::process()
                 // Already have the note, so store the level
                 MIDILevel = mb;
                 if (MIDINoteOffCallback)
-                    MIDINoteOffCallback(MIDINote, MIDILevel);
+                    MIDINoteOffCallback(MIDINote, MIDILevel, channel);
                 MIDINote = 0;
                 MIDILevel = 0;
             }
         }
-        else if (MIDIRunningStatus == (0x90 | (MIDICH - 1)))
+        else if (MIDIRunningStatus >> 4 == (0x9))
         {
+            uint8_t channel = MIDIRunningStatus & 0x0F;
+
             // Note ON Received
             if (MIDINote == 0)
             {
@@ -82,19 +86,22 @@ void MIDIInput::process()
                 if (MIDILevel == 0)
                 {
                     if (MIDINoteOffCallback)
-                        MIDINoteOffCallback(MIDINote, MIDILevel);
+                        MIDINoteOffCallback(MIDINote, MIDILevel, channel);
                 }
                 else
                 {
                     if (MIDINoteOnCallback)
-                        MIDINoteOnCallback(MIDINote, MIDILevel);
+                        MIDINoteOnCallback(MIDINote, MIDILevel, channel);
                     MIDINote = 0;
                     MIDILevel = 0;
                 }
             }
         }
-        else if (MIDIRunningStatus == (0xB0 | (MIDICH - 1)))
+        else if (MIDIRunningStatus >> 4 == (0xB))
         {
+
+            uint8_t channel = MIDIRunningStatus & 0x0F;
+
             // Control Change Received
             if (MIDINote == 0)
             {
@@ -106,7 +113,7 @@ void MIDIInput::process()
                 // Already have the control, so store the level
                 MIDILevel = mb;
                 if (MIDICCCallback)
-                    MIDICCCallback(MIDINote, MIDILevel);
+                    MIDICCCallback(MIDINote, MIDILevel, channel);
                 MIDINote = 0;
                 MIDILevel = 0;
             }
