@@ -27,6 +27,16 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Install toolchain
+      run: sudo apt install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install vult
+      run: npm install vult -g
+
     - name: Download Ninja and CMake
       shell: cmake -P {0}
       run: |
