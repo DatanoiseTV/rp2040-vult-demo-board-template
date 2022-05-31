@@ -21,10 +21,8 @@ Dsp_process_type ctx;
 MIDIInput midi_input;
 
 typedef struct {
-    uint16_t ch0;
-    uint16_t ch1;
-    uint16_t ch2;
-    uint16_t ch3;
+    uint16_t ch0, ch1, ch2, ch3;
+    bool gate1, gate2, gate3, gate4;
 } cv_channels_t;
 
 cv_channels_t cv;
@@ -36,17 +34,18 @@ static inline uint32_t _millis(void)
 
 void process_cv(void)
 {
-    static uint32_t last_millis = 0;
-    uint32_t millis = _millis();
-    if (millis - last_millis > 5) {
-        last_millis = millis;
+        // The rp2040 has multiplexed adc inputs.
+        // TODO: This is very ugly.
         
         adc_select_input(0);
         cv.ch0 = adc_read();
-
         adc_select_input(1);
         cv.ch1 = adc_read();
-    }
+
+        cv.gate1 = gpio_get(PIN_TRIG_IN_0);
+        cv.gate2 = gpio_get(PIN_TRIG_IN_1);
+        cv.gate3 = gpio_get(PIN_TRIG_IN_2);
+        cv.gate4 = gpio_get(PIN_TRIG_IN_3);
 }
 
 // MIDI callbacks
@@ -136,7 +135,7 @@ extern "C"
             // do your audio processing here
             //int32_t smp = Dsp_process(ctx, 10240, 10240, 0);
 
-            int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, gpio_get(PIN_TRIG_IN_0), gpio_get(PIN_TRIG_IN_1), gpio_get(PIN_TRIG_IN_2), gpio_get(PIN_TRIG_IN_3));
+            int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, cv.gate1, cv.gate2, cv.gate3, cv.gate4);
             samples[i * 2 + 0] = smp; // LEFT
             samples[i * 2 + 1] = smp; // RIGHT
         }
