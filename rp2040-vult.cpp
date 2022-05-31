@@ -28,6 +28,7 @@ int main()
 {
     stdio_init_all();
 
+    // Initialize Vult DSP. This must match the DSP code.
     Dsp_process_init(ctx);
 
     if (!set_sys_clock_khz(270000, false))
