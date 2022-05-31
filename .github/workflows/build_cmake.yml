@@ -17,8 +17,9 @@ jobs:
       matrix:
         config:
         - {
-            name: "Ubuntu Latest GCC",
-            artifact: "rp2040-vult.7z", artifact_files: "rp2040-vult.*",
+            name: "Ubuntu Latest / arm-none-eabi-gcc",
+            artifact: "rp2040-vult.7z",
+            artifact_files: "rp2040-vult.*",
             os: ubuntu-latest,
             cc: "gcc", cxx: "g++"
           }
@@ -273,19 +274,8 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
-            os: ubuntu-latest
-          }
-        - {
-            name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
-            os: ubuntu-latest
-          }
-        - {
-            name: "Ubuntu Latest GCC", artifact: "Linux.7z",
-            os: ubuntu-latest
-          }
-        - {
-            name: "macOS Latest Clang", artifact: "macOS.7z",
+            name: "Ubuntu Latest / arm-none-eabi-gcc",
+            artifact: "rp2040-vult.7z",
             os: ubuntu-latest
           }
     needs: release
