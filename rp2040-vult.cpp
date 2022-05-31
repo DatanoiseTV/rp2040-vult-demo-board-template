@@ -14,7 +14,6 @@
 #include "audio_subsystem.h"
 #include "vult.h"
 
-static const uint32_t PIN_DCDC_PSM_CTRL = 23;
 audio_buffer_pool_t *ap;
 
 Dsp_process_type ctx;
@@ -87,13 +86,6 @@ int main()
         gpio_set_dir(pin, 0);
     }
 
-    // DCDC PSM control
-    // 0: PFM mode (best efficiency)
-    // 1: PWM mode (improved ripple)
-    gpio_init(PIN_DCDC_PSM_CTRL);
-    gpio_set_dir(PIN_DCDC_PSM_CTRL, GPIO_OUT);
-    gpio_put(PIN_DCDC_PSM_CTRL, 1); // PWM mode for less Audio noise
-
     adc_init();
 
     for(int pin=PIN_CV_IN_0; pin <= PIN_POT_1; pin++){
@@ -105,7 +97,6 @@ int main()
     midi_input.setCCCallback(cc_callback);
     midi_input.setNoteOnCallback(note_on_callback);
     midi_input.setNoteOffCallback(note_off_callback);
-
     
     // Add your background UI processing or midi etc.
     while(true){
