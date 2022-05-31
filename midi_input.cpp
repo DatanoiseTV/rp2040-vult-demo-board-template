@@ -1,6 +1,22 @@
 #include "midi_input.h"
 
 
+
+void MIDIInput::setNoteOnCallback(void (*callback)(uint8_t, uint8_t))
+{
+    MIDINoteOnCallback = callback;
+}
+
+void MIDIInput::setNoteOffCallback(void (*callback)(uint8_t, uint8_t))
+{
+    MIDINoteOffCallback = callback;
+}
+
+void MIDIInput::setCCCallback(void (*callback)(uint8_t, uint8_t))
+{
+    MIDICCCallback = callback;
+}
+
 void MIDIInput::process()
 {
     uint8_t mb = uart_getc (uart1);

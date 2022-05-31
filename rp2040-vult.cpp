@@ -25,6 +25,22 @@ static inline uint32_t _millis(void)
     return to_ms_since_boot(get_absolute_time());
 }
 
+// MIDI callbacks
+void note_on_callback(uint8_t note, uint8_t level)
+{
+    printf("note on: %d %d\n", note, level);
+}
+
+void note_off_callback(uint8_t note, uint8_t level)
+{
+    printf("note off: %d %d\n", note, level);
+}
+
+void cc_callback(uint8_t cc, uint8_t value)
+{
+    printf("cc: %d %d\n", cc, value);
+}
+
 
 int main()
 {
@@ -60,7 +76,11 @@ int main()
         adc_gpio_init(pin);
     }
 
-
+    midi_input.setCCCallback(cc_callback);
+    midi_input.setNoteOnCallback(note_on_callback);
+    midi_input.setNoteOffCallback(note_off_callback);
+    
+    
     // Add your background UI processing or midi etc.
     while(true){
         midi_input.process();
