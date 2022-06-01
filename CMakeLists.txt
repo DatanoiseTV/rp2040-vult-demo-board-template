@@ -43,7 +43,26 @@ add_custom_command(
         COMMENT "Transcompiling Vult DSP Code to C++."
 )
 
-add_executable(rp2040-vult usb_descriptors.c rp2040-vult.cpp audio_i2s.c audio.cpp audio_subsystem.cpp midi_input.cpp midi_input_usb.cpp vultin.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
+add_library(midi_lib INTERFACE)
+target_sources(midi_lib INTERFACE midi_input.cpp midi_input_usb.cpp)
+target_include_directories(midi_lib INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(midi_lib INTERFACE pico_stdlib)
+
+add_library(audio_lib INTERFACE)
+target_sources(audio_lib INTERFACE audio_i2s.c audio.cpp audio_subsystem.cpp)
+target_include_directories(audio_lib INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(audio_lib INTERFACE pico_stdlib hardware_pio hardware_dma pico_util_buffer)
+
+add_library(vult_runtime_lib INTERFACE)
+target_sources(vult_runtime_lib INTERFACE vultin.cpp)
+target_include_directories(vult_runtime_lib INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(vult_runtime_lib INTERFACE pico_stdlib)
+
+
+add_executable(rp2040-vult
+        usb_descriptors.c
+        main.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
 
 pico_generate_pio_header(rp2040-vult ${CMAKE_CURRENT_LIST_DIR}/audio_i2s.pio)
 
@@ -54,7 +73,7 @@ pico_enable_stdio_uart(rp2040-vult 1)
 #pico_enable_stdio_usb(rp2040-vult 0)
 
 # Add the standard library to the build
-target_link_libraries(rp2040-vult pico_stdlib)
+target_link_libraries(rp2040-vult pico_stdlib midi_lib audio_lib vult_runtime_lib)
 
 # Add any user requested libraries
 target_link_libraries(rp2040-vult
@@ -76,9 +95,6 @@ target_link_libraries(rp2040-vult
 
 target_compile_definitions(rp2040-vult PRIVATE
         USE_AUDIO_I2S=1
-        PICO_AUDIO_I2S_DATA_PIN=16
-        PICO_AUDIO_I2S_CLOCK_PIN_BASE=17
-        CORE1_PROCESS_I2S_CALLBACK=0
         )
 
 add_compile_options("-Wall" "-Wredundant-decls")
