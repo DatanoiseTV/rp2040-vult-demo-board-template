@@ -21,28 +21,34 @@ void MIDIInputUSB::process()
     while (tud_midi_available())
     {
         tud_midi_read(packet, 4);
-        if (packet[1] == 0x80 || packet[1] == 0x90)
+
+        #ifdef DEBUG_MIID
+        printf("%02X %02X %02X %02X\n", packet[0], packet[1], packet[2], packet[3]);
+        #endif
+        
+        if (packet[0] >> 4  == 0x8 || packet[0] >> 4 == 0x9)
         {
-            if (packet[1] == 0x80)
+            if (packet[0] >> 4 == 0x8)
             {
                 if (MIDINoteOffCallback != NULL)
                 {
-                    MIDINoteOffCallback(packet[2], packet[3], packet[1] & 0xF);
+                    MIDINoteOffCallback(packet[1], packet[2], packet[0] & 0xF);
                 }
             }
-            else
+            else if(packet[0] >> 4 == 0x9)
             {
                 if (MIDINoteOnCallback != NULL)
                 {
-                    MIDINoteOnCallback(packet[2], packet[3], packet[1] & 0xF);
+                    MIDINoteOnCallback(packet[1], packet[2], packet[0] & 0xF);
                 }
             }
+
         }
-        else if (packet[1] == 0xB0)
+        else if (packet[0] >> 4 == 0xB)
         {
             if (MIDICCCallback != NULL)
             {
-                MIDICCCallback(packet[2], packet[3], packet[1] & 0xF);
+                MIDICCCallback(packet[1], packet[2], packet[0] & 0xF);
             }
         }
     }
