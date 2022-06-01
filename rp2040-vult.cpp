@@ -63,21 +63,21 @@ void process_cv(void)
 void note_on_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
     Dsp_noteOn(ctx, note, level, channel);
-    printf("note on (ch %d): %d %d\n", channel, note, level);
+    //printf("note on (ch %d): %d %d\n", channel, note, level);
     // gpio_put(24, 1);
 }
 
 void note_off_callback(uint8_t note, uint8_t level, uint8_t channel)
 {
     Dsp_noteOff(ctx, note, channel);
-    printf("note off (ch %d): %d %d\n", channel, note, level);
+    //printf("note off (ch %d): %d %d\n", channel, note, level);
     // gpio_put(24, 0);
 }
 
 void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
 {
     Dsp_controlChange(ctx, cc, value, channel);
-    printf("cc (ch %d): %d %d\n", channel, cc, value);
+    //printf("cc (ch %d): %d %d\n", channel, cc, value);
 }
 
 
@@ -94,9 +94,10 @@ int main()
         printf("system clock now 270MHz\n");
         */
 
-           vreg_set_voltage(VREG_VOLTAGE_1_20);
-    sleep_ms(1000);
-    set_sys_clock_khz(360000, true);
+    vreg_set_voltage(VREG_VOLTAGE_1_30);
+    sleep_ms(1);
+    set_sys_clock_khz(420000, true);
+
 
     #define DEBUGOMATIC_BOARD 1
 
