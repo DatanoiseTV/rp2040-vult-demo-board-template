@@ -10,14 +10,25 @@
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
 #include "project_config.h"
+#include "bsp/board.h"
+#include "tusb.h"
 #include "midi_input.h"
+#include "midi_input_usb.h"
 #include "audio_subsystem.h"
 #include "vult.h"
+
+#define USE_USB_MIDI 1
 
 audio_buffer_pool_t *ap;
 
 Dsp_process_type ctx;
+
+#ifdef USE_DIN_MIDI
 MIDIInput midi_input(uart1);
+#elif defined(USE_USB_MIDI)
+MIDIInputUSB midi_input;
+#endif
+
 
 typedef struct {
     uint16_t ch0, ch1, ch2, ch3;
@@ -69,7 +80,9 @@ void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
 
 int main()
 {
-    stdio_init_all();
+    //stdio_init_all();
+    board_init();
+    tusb_init();
 
     // Initialize Vult DSP. This must match the DSP code.
     Dsp_process_init(ctx);
@@ -100,6 +113,7 @@ int main()
     
     // Add your background UI processing or midi etc.
     while(true){
+        tud_task();
         midi_input.process();
     }
 }
