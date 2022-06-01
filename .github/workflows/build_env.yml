@@ -1,5 +1,5 @@
 
-name: publish
+name: Prepare and push build container
 
 on:
   push:
