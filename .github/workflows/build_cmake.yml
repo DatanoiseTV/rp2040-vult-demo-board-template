@@ -31,7 +31,7 @@ jobs:
             artifact: "rp2040-vult.tar",
             artifact_files: "rp2040-vult.*",
             os: "ubuntu-latest",
-            container: "ghcr.io/${{ github.repository }}",
+            container: "ghcr.io/datanoisetv/rp2040-vult-demo-board-template",
             cc: "gcc", cxx: "g++"
           }
     container:
@@ -284,7 +284,7 @@ jobs:
             name: "Ubuntu Latest / arm-none-eabi-gcc",
             artifact: "rp2040-vult.tar",
             os: "ubuntu-latest",
-            container: "ghcr.io/${{ github.repository }}"
+            container: "ghcr.io/datanoisetv/rp2040-vult-demo-board-template"
           }
     container:
       image: ${{ matrix.config.container }}
