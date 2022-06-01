@@ -78,6 +78,7 @@ target_compile_definitions(rp2040-vult PRIVATE
         USE_AUDIO_I2S=1
         PICO_AUDIO_I2S_DATA_PIN=16
         PICO_AUDIO_I2S_CLOCK_PIN_BASE=17
+        CORE1_PROCESS_I2S_CALLBACK=0
         )
 
 add_compile_options("-Wall" "-Wredundant-decls")

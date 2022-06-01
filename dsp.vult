@@ -74,13 +74,13 @@ fun process(cv1:real, cv2:real, gate1:bool, gate2:bool, gate3:bool, gate4:bool){
    val comp   = 1.0 - phase1;
    val reset  = (pre_phase1 - phase1) > 0.5;
    pre_phase1 = phase1;
-   val phase2 = phasor(real_pitch+smooth(det*velo)*64.0,reset);
+   val phase2 = phasor(real_pitch+smooth(det)*64.0,reset);
    val sine  = sin(2.0*3.14159265359*phase2);
    //return (sine*comp);
    
    val env = Adsr.do(gate, 0.02,0.5,0.1,0.2);
 
-   //val dry = env*(sine*comp);
+   val dry = env*(sine*comp);
 
    val mixed = dry*0.6+(delay(dry, smooth(delay_time), 0.25)*0.4);
 

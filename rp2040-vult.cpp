@@ -9,6 +9,7 @@
 #include "hardware/timer.h"
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
+#include "hardware/vreg.h"
 #include "project_config.h"
 #include "bsp/board.h"
 #include "tusb.h"
@@ -87,10 +88,15 @@ extern "C"
 
 int main()
 {
-    if (!set_sys_clock_khz(270000, false))
+    /*if (!set_sys_clock_khz(270000, false))
         printf("system clock 270MHz failed\n");
     else
         printf("system clock now 270MHz\n");
+        */
+
+           vreg_set_voltage(VREG_VOLTAGE_1_20);
+    sleep_ms(1000);
+    set_sys_clock_khz(360000, true);
 
     #define DEBUGOMATIC_BOARD 1
 
