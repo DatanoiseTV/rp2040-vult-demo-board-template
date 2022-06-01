@@ -79,31 +79,45 @@ void cc_callback(uint8_t cc, uint8_t value, uint8_t channel)
     printf("cc (ch %d): %d %d\n", channel, cc, value);
 }
 
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 int main()
 {
+    if (!set_sys_clock_khz(270000, false))
+        printf("system clock 270MHz failed\n");
+    else
+        printf("system clock now 270MHz\n");
 
     #define DEBUGOMATIC_BOARD 1
+
+    // Debugomatic has output buffers on each output which need
+    // to be enabled first before I/O works!
     #ifdef DEBUGOMATIC_BOARD
         gpio_init(24);
         gpio_set_dir(24, 1);
         gpio_put(24, 1);
+
+        gpio_init(26);
+        gpio_set_dir(26, 1);
+        gpio_put(26, 1);
     #endif
 
     stdio_init_all();
-
 
     board_init();
     tusb_init();
 
     // Initialize Vult DSP. This must match the DSP code.
     Dsp_process_init(ctx);
+    Dsp_default_init(ctx);
+    Dsp_default(ctx);
 
-    /*if (!set_sys_clock_khz(270000, false))
-        printf("system clock 270MHz failed\n");
-    else
-        printf("system clock now 270MHz\n");
-        */
 
+    #ifdef DINI
     // Initialize all Trigger inputs
     for (int pin = PIN_TRIG_IN_0; pin <= PIN_TRIG_BTN; pin++)
     {
@@ -120,11 +134,14 @@ int main()
         gpio_set_dir(pin, GPIO_IN);
         adc_gpio_init(pin);
     }
+    #endif
 
     midi_input.setCCCallback(cc_callback);
     midi_input.setNoteOnCallback(note_on_callback);
     midi_input.setNoteOffCallback(note_off_callback);
 
+ srand(1231293128);        
+    ap = init_audio();
     // Add your background UI processing or midi etc.
     while (true)
     {
@@ -133,28 +150,30 @@ int main()
     }
 }
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
     void i2s_callback_func()
     {
+        //printf("i2s callback\n");
         audio_buffer_t *buffer = take_audio_buffer(ap, false);
         if (buffer == NULL)
         {
+            printf("empty buffer\n");
             return;
         }
         int32_t *samples = (int32_t *)buffer->buffer->bytes;
 
         // process CV each round of samples
-        process_cv();
+        //process_cv();
+
+        // seed rng
+       
 
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
-            int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, cv.gate1, cv.gate2, cv.gate3, cv.gate4);
+            int32_t smp = Dsp_process(ctx, cv.ch0, cv.ch1, cv.gate1, cv.gate2, cv.gate3, cv.gate4) << 16u;
             samples[i * 2 + 0] = smp; // LEFT
             samples[i * 2 + 1] = smp; // RIGHT
+
+
         }
         buffer->sample_count = buffer->max_sample_count;
         give_audio_buffer(ap, buffer);

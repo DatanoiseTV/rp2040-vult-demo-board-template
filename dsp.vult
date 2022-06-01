@@ -1,25 +1,120 @@
-/* You can use a this template to start a program */
+//fun process(cv1:real, cv2:real, gate1:bool, gate2:bool, gate3:bool, gate4:bool){
+
+
+/* Phase distortion oscillator */
+
+// Used to soften the transitions of controls
+fun smooth(input){
+   mem x;
+   x = x+(input-x)*0.005;
+   return x;
+}
+
+// Returns true every time the input value changes
+fun change(x):bool {
+    mem pre_x;
+    val v:bool = pre_x<>x;
+    pre_x = x;
+    return v;
+}
+
+// Converts the MIDI note to increment rate at a 44100 sample rate
+fun pitchToRate(d) return 8.1758*exp(0.0577623*d)/44100.0;
+
+fun phasor(pitch,reset){
+    mem rate,phase;
+    if(change(pitch))
+        rate = pitchToRate(pitch);
+    phase = if reset then 0.0 else phase + rate;
+    phase = if phase > 1.0 then phase - 1.0 else phase;
+    return phase;
+}
+
+
+fun delay(x:real, time:real, feedback:real) : real {
+   mem buffer : array(real,32000);
+   mem write_pos;
+   // Constraints the parameter values
+   time     = clip(time,0.0,1.0);
+   feedback = clip(feedback,0.0,1.0);
+   // Gets the position in the buffer to read
+   val index_r  = real(size(buffer)) * time;
+   val index_i  = int(floor(index_r));
+   val delta    = write_pos - index_i;
+   val read_pos = if delta < 0 then size(buffer)+delta else delta;
+   // Gets the decimal part of the position
+   val decimal  = index_r - real(index_i);
+   // Reads the values in the buffer
+   val x1 = get(buffer,read_pos);
+   val x2 = get(buffer,(read_pos+1) % size(buffer));
+   // Interpolates the value
+   val ret = (x2-x1)*decimal + x1;
+   // Write the data to the buffer
+   write_pos = (write_pos+1) % size(buffer);
+   _ = set(buffer, write_pos, Saturate.process(x+feedback*ret));
+   return ret;
+}
 
 // Main processing function
-// 'input' is by default a sine wave at 440 Hz
-
 fun process(cv1:real, cv2:real, gate1:bool, gate2:bool, gate3:bool, gate4:bool){
-   val o1 = Blit.process(cv1, cv2, 0.0);
-   return o1;
+
+   mem volume; //,detune; // values set in 'controlChange'
+   mem pitch;
+   mem pre_phase1;
+   mem gate;
+   mem velo;
+   mem delay_time;
+   val det = Adsr.do(gate, 0.0, 0.5, 0.5, 0.5)*2.0;
+
+   val real_pitch = smooth(pitch);
+
+   // Implements the resonant filter simulation as shown in
+   // http://en.wikipedia.org/wiki/Phase_distortion_synthesis
+   val phase1 = phasor(real_pitch, false);
+   val comp   = 1.0 - phase1;
+   val reset  = (pre_phase1 - phase1) > 0.5;
+   pre_phase1 = phase1;
+   val phase2 = phasor(real_pitch+smooth(det*velo)*64.0,reset);
+   val sine  = sin(2.0*3.14159265359*phase2);
+   //return (sine*comp);
+   
+   val env = Adsr.do(gate, 0.02,0.5,0.1,0.2);
+
+   //val dry = env*(sine*comp);
+
+   val mixed = dry*0.6+(delay(dry, smooth(delay_time), 0.25)*0.4);
+
+   return mixed;
 }
 
 // Called when a note On is received
 and noteOn(note:int,velocity:int,channel:int){
+   mem gate = 1.0;
+    mem pitch = real(note);
+    mem velo = real(velocity)/64.0;
 }
 
 // Called when a note Off is received
 and noteOff(note:int,channel:int){
+   mem gate = 0.0;
 }
 
 // Called when a control changes
 and controlChange(control:int,value:int,channel:int){
+   mem volume;
+   mem detune;
+   // Control 30 defines the volume
+   if(control==30) volume = real(value)/127.0;
+   if(control==1) delay_time = real(value)/127.0;
 }
 
 // Called on initialization to define initial values
 and default(){
+
+   mem volume = 1.0;
+   mem pitch = 45.0;
+   mem detune = 0.0;
+   mem gate = 1.0;
+   mem velo = 1.0;
+   mem delay_time = 0.5;
 }

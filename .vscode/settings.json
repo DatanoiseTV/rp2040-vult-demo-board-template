@@ -12,5 +12,8 @@
     "buildTarget" : {
       "visibility": "hidden"
                },
-     },
+    },
+    "files.associations": {
+      "audio_i2s.pio.h": "c"
+    },
 }

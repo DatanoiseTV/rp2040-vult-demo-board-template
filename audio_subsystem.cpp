@@ -1,7 +1,5 @@
 #include "audio_subsystem.h"
 
-#define SAMPLES_PER_BUFFER 256 // Samples / channel
-
 #include "project_config.h"
 
 audio_buffer_pool_t *init_audio()
@@ -33,11 +31,19 @@ audio_buffer_pool_t *init_audio()
         panic("PicoAudio: Unable to open audio device.\n");
     }
 
+    printf("PicoAudio: Audio output format: %d Hz, %d bit, %d channel\n",
+           output_format->sample_freq,
+           output_format->pcm_format == AUDIO_PCM_FORMAT_S16 ? 16 : 32,
+           output_format->channel_count);
+
     ok = audio_i2s_connect(producer_pool);
     assert(ok);
     { // initial buffer data
         audio_buffer_t *buffer = take_audio_buffer(producer_pool, true);
         int32_t *samples = (int32_t *)buffer->buffer->bytes;
+
+        printf("PicoAudio: Initializing audio buffer with %d samples\n",
+               buffer->buffer->size / sizeof(int32_t));
         for (uint i = 0; i < buffer->max_sample_count; i++)
         {
             samples[i * 2 + 0] = 0;

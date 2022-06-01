@@ -43,7 +43,7 @@ add_custom_command(
         COMMENT "Transcompiling Vult DSP Code to C++."
 )
 
-add_executable(rp2040-vult usb_descriptors.c rp2040-vult.cpp audio_i2s.c audio.cpp audio_subsystem.c midi_input.cpp midi_input_usb.cpp vultin.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
+add_executable(rp2040-vult usb_descriptors.c rp2040-vult.cpp audio_i2s.c audio.cpp audio_subsystem.cpp midi_input.cpp midi_input_usb.cpp vultin.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
 
 pico_generate_pio_header(rp2040-vult ${CMAKE_CURRENT_LIST_DIR}/audio_i2s.pio)
 
@@ -76,6 +76,8 @@ target_link_libraries(rp2040-vult
 
 target_compile_definitions(rp2040-vult PRIVATE
         USE_AUDIO_I2S=1
+        PICO_AUDIO_I2S_DATA_PIN=16
+        PICO_AUDIO_I2S_CLOCK_PIN_BASE=17
         )
 
 add_compile_options("-Wall" "-Wredundant-decls")
