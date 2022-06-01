@@ -43,7 +43,7 @@ add_custom_command(
         COMMENT "Transcompiling Vult DSP Code to C++."
 )
 
-add_executable(rp2040-vult rp2040-vult.cpp audio_i2s.c audio.cpp audio_subsystem.c midi_input.cpp vultin.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
+add_executable(rp2040-vult usb_descriptors.c rp2040-vult.cpp audio_i2s.c audio.cpp audio_subsystem.c midi_input.cpp vultin.cpp ${CMAKE_CURRENT_BINARY_DIR}/vult.cpp)
 
 pico_generate_pio_header(rp2040-vult ${CMAKE_CURRENT_LIST_DIR}/audio_i2s.pio)
 
@@ -51,7 +51,7 @@ pico_set_program_name(rp2040-vult "rp2040-vult")
 pico_set_program_version(rp2040-vult "0.1")
 
 pico_enable_stdio_uart(rp2040-vult 1)
-pico_enable_stdio_usb(rp2040-vult 1)
+pico_enable_stdio_usb(rp2040-vult 0)
 
 # Add the standard library to the build
 target_link_libraries(rp2040-vult pico_stdlib)
@@ -69,6 +69,8 @@ target_link_libraries(rp2040-vult
         hardware_clocks
         pico_util_buffer
         pico_multicore
+        tinyusb_device
+        tinyusb_board
         )
 
 target_compile_definitions(rp2040-vult PRIVATE
@@ -83,4 +85,3 @@ target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
 pico_set_boot_stage2(rp2040-vult slower_boot2)
 
 pico_add_extra_outputs(rp2040-vult)
-
