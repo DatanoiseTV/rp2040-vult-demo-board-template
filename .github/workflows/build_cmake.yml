@@ -1,4 +1,4 @@
-name: CMake Build Matrix
+name: Compile firmware
 
 on: 
   push:
