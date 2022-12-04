@@ -1,3 +1,8 @@
+# Deprecated
+
+Deprecated in favor of https://github.com/DatanoiseTV/PicoADK-Hardware
+
+
 # Raspberry Pi RP2040 MCU Vult DSP template
 
 This C++ boilerplate template allows for creating Synthesizers, Effects and other Audio DSP related projects based on the cheap and easily available RP2040 MCU. It targets the "RP2040 Eurorack DSP Demo Board", which I have made.
